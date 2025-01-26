@@ -221,6 +221,71 @@ void test_notInList(void){
 }
 
 
+void test_list_initialization(void) {
+  list_t *lst = list_init(destroy_data, compare_to);
+
+  TEST_ASSERT_FALSE(lst == NULL);
+  TEST_ASSERT_TRUE(lst->size ==0);
+  TEST_ASSERT_TRUE(lst->head->data == NULL);
+  TEST_ASSERT_TRUE(lst->head->next == lst->head);
+  TEST_ASSERT_TRUE(lst->head->prev == lst->head);
+  list_destroy(&lst);
+}
+
+
+void test_add3(void) {
+  list_add(lst_, alloc_data(1));
+  list_add(lst_, alloc_data(2));
+  list_add(lst_, alloc_data(3));
+
+  TEST_ASSERT_TRUE(lst_->size ==3);
+  TEST_ASSERT_TRUE(*((int *)lst_->head->next->data) == 3);
+  TEST_ASSERT_TRUE(*((int *)lst_->head->next->next->data) == 2);
+  TEST_ASSERT_TRUE(*((int *)lst_->head->next->next->next->data) == 1);
+}
+
+void test_remove_last(void) {
+  populate_list();
+  int *rval = (int *)list_remove_index(lst_, lst_->size -1);
+  TEST_ASSERT_TRUE(lst_->size == 4);
+  TEST_ASSERT_TRUE(*rval == 0);
+
+  free(rval);
+
+  node_t *curr = lst_->head->next;
+  TEST_ASSERT_TRUE(*((int *)curr->data) == 4);
+  curr = curr->next;
+  TEST_ASSERT_TRUE(*((int *)curr->data) == 3);
+  curr = curr->next;
+  TEST_ASSERT_TRUE(*((int *)curr->data) == 2);
+  curr = curr->next;
+  TEST_ASSERT_TRUE(*((int *)curr->data) == 1);
+
+}
+
+// void test_is_empty(void) {
+//   list_t *empty_lst = list_init(NULL, NULL);
+//   TEST_ASSERT_TRUE(empty_lst->size == 0);
+//   list_add(empty_lst, alloc_data(1));
+//   TEST_ASSERT_TRUE(empty_lst->size == 1);
+
+//   void *rval = list_remove_index(empty_lst, 0);
+//   TEST_ASSERT_TRUE(*rval == 1);
+//   free(rval);
+
+//   TEST_ASSERT_TRUE(empty_lst->size = 0);
+//   list_destroy(&empty_lst);
+//   TEST_ASSERT_TRUE(empty_lst == NULL);
+// }
+
+void test_remove_empty_list(void) {
+  list_t *empty_lst = list_init(destroy_data, compare_to);
+  void *rval = list_remove_index(empty_lst, 0);
+  TEST_ASSERT_TRUE(rval == NULL);
+  TEST_ASSERT_TRUE(empty_lst->size == 0);
+  list_destroy(&empty_lst);
+}
+
 int main(void) {
   UNITY_BEGIN();
   RUN_TEST(test_create_destroy);
@@ -234,5 +299,10 @@ int main(void) {
   RUN_TEST(test_indexOf0);
   RUN_TEST(test_indexOf3);
   RUN_TEST(test_notInList);
+
+  RUN_TEST(test_list_initialization);
+  RUN_TEST(test_add3);
+  RUN_TEST(test_remove_last);
+  RUN_TEST(test_remove_empty_list);
   return UNITY_END();
 }
