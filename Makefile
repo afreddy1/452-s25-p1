@@ -44,7 +44,7 @@ clean:
 .PHONY: install-deps
 install-deps:
 	sudo apt-get update -y
-	sudo apt-get install -y libio-socket-ssl-perl libmime-tools-perl
+	sudo apt-get install -y libio-socket-ssl-perl libmime-tools-perl libreadline-dev
 
 
 -include $(DEPS) $(TEST_DEPS) $(EXE_DEPS)
